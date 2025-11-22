@@ -58,8 +58,8 @@ def process_palm_reading(image_path, yolo_model_path, output_path='palm_reading_
 
 
 if __name__ == "__main__":
-    IMAGE_PATH = '/content/t5.jpeg'
-    MODEL_PATH = '/content/drive/MyDrive/last.pt'
+    IMAGE_PATH = '/home/momonga/Downloads/t5.jpeg'
+    MODEL_PATH = '/home/momonga/Documents/PalmReaderPro/best.pt'
     
     if len(sys.argv) > 1:
         IMAGE_PATH = sys.argv[1]
