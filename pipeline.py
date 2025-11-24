@@ -98,19 +98,23 @@ class PalmReadingPipeline:
         self.hand_detector.draw_landmarks(img, hand_landmarks)
         self.hand_detector.draw_mounts(img, mounts)
         
-        # Save standardized image temporarily for YOLO
-        temp_rotated_path = image_path.replace('.jpg', '_standardized_temp.jpg').replace('.png', '_standardized_temp.png')
+          # Save standardized image temporarily for YOLO
+        base_name = os.path.splitext(image_path)[0]
+        ext = os.path.splitext(image_path)[1]
+        temp_rotated_path = f"{base_name}_standardized_temp{ext}"
+        
         cv2.imwrite(temp_rotated_path, img)
         
         # Detect lines on standardized image
         line_result = self.line_detector.detect(temp_rotated_path, conf=YOLO_CONFIDENCE, iou=YOLO_IOU)
         
-        # Clean up temp file
+        # Clean up temp file (with safety check)
         try:
-            os.remove(temp_rotated_path)
-        except:
-            pass
-        
+            if os.path.exists(temp_rotated_path) and temp_rotated_path != image_path:
+                os.remove(temp_rotated_path)
+        except Exception as e:
+            print(f"Warning: Could not delete temp file {temp_rotated_path}: {e}")
+       
         interpretations = {}
         
         if line_result and line_result.keypoints is not None:
